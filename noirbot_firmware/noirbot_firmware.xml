@@ -1,0 +1,9 @@
+<library path="noirbot_firmware">
+  <class name="noirbot_firmware/NoirInterface" type="noirbot_firmware::NoirInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Differential-drive SystemInterface for Noirbot: talks to the
+      onboard microcontroller over a serial line.
+    </description>
+  </class>
+</library>

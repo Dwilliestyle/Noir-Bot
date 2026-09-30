@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+7db82cda67b93c15f00068376e1a0ea0 CMakeFiles/noirbot_firmware_uninstall

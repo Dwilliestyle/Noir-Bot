@@ -1,0 +1,79 @@
+[0.017s] Invoking command in '/home/don/noirbot_ws/src/build/noirbot_firmware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/don/noirbot_ws/src/noirbot_firmware -DCMAKE_INSTALL_PREFIX=/home/don/noirbot_ws/src/install/noirbot_firmware
+[0.106s] -- The CXX compiler identification is GNU 13.3.0
+[0.124s] -- Detecting CXX compiler ABI info
+[0.247s] -- Detecting CXX compiler ABI info - done
+[0.258s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.258s] -- Detecting CXX compile features
+[0.259s] -- Detecting CXX compile features - done
+[0.266s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.469s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[0.648s] -- Found hardware_interface: 4.48.0 (/opt/ros/jazzy/share/hardware_interface/cmake)
+[0.737s] -- Found rosidl_generator_c: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.764s] -- Found rosidl_generator_cpp: 4.6.9 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.795s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.829s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.205s] -- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+[1.270s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[1.274s] -- Found rmw_fastrtps_cpp: 8.4.4 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[1.308s] -- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+[1.360s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[1.363s] -- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+[1.383s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[1.386s] -- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+[1.396s] -- Found TinyXML2 via Config file: /usr/lib/x86_64-linux-gnu/cmake/tinyxml2
+[1.408s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.550s] -- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.83.0/BoostConfig.cmake (found version "1.83.0")  
+[1.775s] -- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[1.902s] -- Added test 'copyright' to check source files copyright and LICENSE
+[1.903s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[1.903s] -- Configured cppcheck include dirs: $<BUILD_INTERFACE:/home/don/noirbot_ws/src/noirbot_firmware/include>
+[1.903s] -- Configured cppcheck exclude dirs and/or files: 
+[1.904s] -- Added test 'cpplint' to check C / C++ code against the Google style
+[1.904s] -- Configured cpplint exclude dirs and/or files: 
+[1.905s] -- Added test 'lint_cmake' to check CMake code style
+[1.906s] -- Added test 'uncrustify' to check C / C++ code style
+[1.907s] -- Configured uncrustify additional arguments: 
+[1.907s] -- Added test 'xmllint' to check XML markup files
+[1.910s] -- Configuring done (1.9s)
+[1.930s] -- Generating done (0.0s)
+[1.935s] -- Build files have been written to: /home/don/noirbot_ws/src/build/noirbot_firmware
+[1.945s] Invoked command in '/home/don/noirbot_ws/src/build/noirbot_firmware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/don/noirbot_ws/src/noirbot_firmware -DCMAKE_INSTALL_PREFIX=/home/don/noirbot_ws/src/install/noirbot_firmware
+[1.946s] Invoking command in '/home/don/noirbot_ws/src/build/noirbot_firmware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/don/noirbot_ws/src/build/noirbot_firmware -- -j4 -l4
+[2.001s] [ 66%] [32mBuilding CXX object CMakeFiles/noirbot_firmware.dir/src/noir_interface.cpp.o[0m
+[2.001s] [ 66%] [32mBuilding CXX object CMakeFiles/noirbot_firmware.dir/src/serial_port.cpp.o[0m
+[6.431s] [100%] [32m[1mLinking CXX shared library libnoirbot_firmware.so[0m
+[6.633s] [100%] Built target noirbot_firmware
+[6.644s] Invoked command in '/home/don/noirbot_ws/src/build/noirbot_firmware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/don/noirbot_ws/src/build/noirbot_firmware -- -j4 -l4
+[6.645s] Invoking command in '/home/don/noirbot_ws/src/build/noirbot_firmware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/don/noirbot_ws/src/build/noirbot_firmware
+[6.655s] -- Install configuration: ""
+[6.655s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/noirbot_firmware.xml
+[6.655s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/include
+[6.655s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/include/noir_firmware
+[6.655s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/include/noir_firmware/noir_interface.hpp
+[6.656s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/include/noir_firmware/serial_port.hpp
+[6.656s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/lib/libnoirbot_firmware.so
+[6.656s] -- Set non-toolchain portion of runtime path of "/home/don/noirbot_ws/src/install/noirbot_firmware/lib/libnoirbot_firmware.so" to ""
+[6.656s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/environment/library_path.sh
+[6.657s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/environment/library_path.dsv
+[6.657s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/ament_index/resource_index/package_run_dependencies/noirbot_firmware
+[6.657s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/ament_index/resource_index/parent_prefix_path/noirbot_firmware
+[6.657s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/environment/ament_prefix_path.sh
+[6.657s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/environment/ament_prefix_path.dsv
+[6.657s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/environment/path.sh
+[6.657s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/environment/path.dsv
+[6.658s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/local_setup.bash
+[6.658s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/local_setup.sh
+[6.658s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/local_setup.zsh
+[6.658s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/local_setup.dsv
+[6.658s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/package.dsv
+[6.658s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/ament_index/resource_index/packages/noirbot_firmware
+[6.658s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/ament_index/resource_index/hardware_interface__pluginlib__plugin/noirbot_firmware
+[6.658s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/cmake/export_noirbot_firmwareExport.cmake
+[6.659s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/cmake/export_noirbot_firmwareExport-noconfig.cmake
+[6.659s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/cmake/ament_cmake_export_targets-extras.cmake
+[6.659s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/cmake/ament_cmake_export_dependencies-extras.cmake
+[6.659s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/cmake/ament_cmake_export_include_directories-extras.cmake
+[6.659s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/cmake/noirbot_firmwareConfig.cmake
+[6.659s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/cmake/noirbot_firmwareConfig-version.cmake
+[6.659s] -- Installing: /home/don/noirbot_ws/src/install/noirbot_firmware/share/noirbot_firmware/package.xml
+[6.661s] Invoked command in '/home/don/noirbot_ws/src/build/noirbot_firmware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/don/noirbot_ws/src/build/noirbot_firmware

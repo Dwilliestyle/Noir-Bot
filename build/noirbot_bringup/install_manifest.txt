@@ -1,0 +1,17 @@
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/launch/noirbot.launch.py
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/config/noirbot_controllers.yaml
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/ament_index/resource_index/package_run_dependencies/noirbot_bringup
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/ament_index/resource_index/parent_prefix_path/noirbot_bringup
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/environment/ament_prefix_path.sh
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/environment/ament_prefix_path.dsv
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/environment/path.sh
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/environment/path.dsv
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/local_setup.bash
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/local_setup.sh
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/local_setup.zsh
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/local_setup.dsv
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/package.dsv
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/ament_index/resource_index/packages/noirbot_bringup
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/cmake/noirbot_bringupConfig.cmake
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/cmake/noirbot_bringupConfig-version.cmake
+/home/don/noirbot_ws/src/install/noirbot_bringup/share/noirbot_bringup/package.xml

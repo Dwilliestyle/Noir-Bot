@@ -1,0 +1,4 @@
+source;share/noirbot_firmware/local_setup.bash
+source;share/noirbot_firmware/local_setup.dsv
+source;share/noirbot_firmware/local_setup.sh
+source;share/noirbot_firmware/local_setup.zsh
