@@ -1,9 +1,0 @@
-/home/don/noirbot_ws/src/build/noirbot_description/CMakeFiles/uninstall.dir
-/home/don/noirbot_ws/src/build/noirbot_description/CMakeFiles/noirbot_description_uninstall.dir
-/home/don/noirbot_ws/src/build/noirbot_description/CMakeFiles/test.dir
-/home/don/noirbot_ws/src/build/noirbot_description/CMakeFiles/edit_cache.dir
-/home/don/noirbot_ws/src/build/noirbot_description/CMakeFiles/rebuild_cache.dir
-/home/don/noirbot_ws/src/build/noirbot_description/CMakeFiles/list_install_components.dir
-/home/don/noirbot_ws/src/build/noirbot_description/CMakeFiles/install.dir
-/home/don/noirbot_ws/src/build/noirbot_description/CMakeFiles/install/local.dir
-/home/don/noirbot_ws/src/build/noirbot_description/CMakeFiles/install/strip.dir

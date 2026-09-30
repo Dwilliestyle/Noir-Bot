@@ -1,2 +1,5 @@
 .vscode/browse.vc.db*
 .vscode/ipch/
+build/
+install/
+log/
