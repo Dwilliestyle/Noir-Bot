@@ -10,8 +10,8 @@ controller_manager:
 
 diff_drive_controller:
   ros__parameters:
-    left_wheel_names: ["wheel_left_joint"]
-    right_wheel_names: ["wheel_right_joint"]
+    left_wheel_names: ["wheel_right_joint"]   # swapped to fix reversed turns
+    right_wheel_names: ["wheel_left_joint"]   # swapped to fix reversed turns
 
     wheel_separation: 0.17
     wheel_radius: 0.033
@@ -26,4 +26,19 @@ diff_drive_controller:
     enable_odom_tf: true
 
     cmd_vel_timeout: 0.5
-    use_stamped_vel: false
+
+    # new: speed and acceleration limits
+    linear:
+      x:
+        has_velocity_limits: true
+        max_velocity: 0.2
+        min_velocity: -0.2
+        has_acceleration_limits: true
+        max_acceleration: 0.4
+    angular:
+      z:
+        has_velocity_limits: true
+        max_velocity: 1.0
+        min_velocity: -1.0
+        has_acceleration_limits: true
+        max_acceleration: 1.5
