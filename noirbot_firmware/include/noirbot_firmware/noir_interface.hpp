@@ -11,9 +11,9 @@
 #include "rclcpp/macros.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 
-#include "noir_firmware/serial_port.hpp"
+#include "noirbot_firmware/serial_port.hpp"
 
-namespace noir_firmware
+namespace noirbot_firmware
 {
 
 // A two-wheel differential drive SystemInterface: one board over one
@@ -76,6 +76,6 @@ private:
   bool have_last_ticks_{false};
 };
 
-}  // namespace noir_firmware
+}  // namespace noirbot_firmware
 
 #endif  // NOIR_FIRMWARE__NOIR_INTERFACE_HPP_

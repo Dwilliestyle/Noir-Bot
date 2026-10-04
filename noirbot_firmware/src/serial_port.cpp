@@ -1,11 +1,11 @@
-#include "noir_firmware/serial_port.hpp"
+#include "noirbot_firmware/serial_port.hpp"
 
 #include <fcntl.h>
 #include <poll.h>
 #include <termios.h>
 #include <unistd.h>
 
-namespace noir_firmware
+namespace noirbot_firmware
 {
 
 SerialPort::~SerialPort()
@@ -108,4 +108,4 @@ bool SerialPort::read_line(std::string & line, int timeout_ms)
   }
 }
 
-}  // namespace noir_firmware
+}  // namespace noirbot_firmware

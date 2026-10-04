@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace noir_firmware
+namespace noirbot_firmware
 {
 
 // Minimal blocking-read-with-timeout serial port (POSIX termios).
@@ -36,6 +36,6 @@ private:
   int fd_{-1};
 };
 
-}  // namespace noir_firmware
+}  // namespace noirbot_firmware
 
 #endif  // NOIR_FIRMWARE__SERIAL_PORT_HPP_

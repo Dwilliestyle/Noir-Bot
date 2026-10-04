@@ -1,4 +1,4 @@
-#include "noir_firmware/noir_interface.hpp"
+#include "noirbot_firmware/noir_interface.hpp"
 
 #include <cmath>
 #include <sstream>
@@ -13,7 +13,7 @@ constexpr double kTwoPi = 2.0 * M_PI;
 auto const hwiLogger = rclcpp::get_logger("NoirInterface");
 }  // namespace
 
-namespace noir_firmware
+namespace noirbot_firmware
 {
 
 hardware_interface::CallbackReturn NoirInterface::on_init(
@@ -190,6 +190,6 @@ hardware_interface::return_type NoirInterface::write(
   return hardware_interface::return_type::OK;
 }
 
-}  // namespace noir_firmware
+}  // namespace noirbot_firmware
 
-PLUGINLIB_EXPORT_CLASS(noir_firmware::NoirInterface, hardware_interface::SystemInterface)
+PLUGINLIB_EXPORT_CLASS(noirbot_firmware::NoirInterface, hardware_interface::SystemInterface)
