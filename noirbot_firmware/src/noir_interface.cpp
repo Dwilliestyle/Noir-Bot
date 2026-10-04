@@ -10,7 +10,7 @@
 namespace
 {
 constexpr double kTwoPi = 2.0 * M_PI;
-auto const kLogger = rclcpp::get_logger("NoirInterface");
+auto const hwiLogger = rclcpp::get_logger("NoirInterface");
 }  // namespace
 
 namespace noir_firmware
@@ -46,24 +46,24 @@ hardware_interface::CallbackReturn NoirInterface::on_init(
   // the same contract 'ros2_control_demos' DiffBot example uses.
   for (const auto & joint : info_.joints) {
     if (joint.command_interfaces.size() != 1) {
-      RCLCPP_ERROR(kLogger, "Joint '%s' must have exactly 1 command interface.",
+      RCLCPP_ERROR(hwiLogger, "Joint '%s' must have exactly 1 command interface.",
         joint.name.c_str());
       return hardware_interface::CallbackReturn::ERROR;
     }
     if (joint.command_interfaces[0].name != hardware_interface::HW_IF_VELOCITY) {
-      RCLCPP_ERROR(kLogger, "Joint '%s' command interface must be velocity.",
+      RCLCPP_ERROR(hwiLogger, "Joint '%s' command interface must be velocity.",
         joint.name.c_str());
       return hardware_interface::CallbackReturn::ERROR;
     }
     if (joint.state_interfaces.size() != 2) {
-      RCLCPP_ERROR(kLogger, "Joint '%s' must have position + velocity state interfaces.",
+      RCLCPP_ERROR(hwiLogger, "Joint '%s' must have position + velocity state interfaces.",
         joint.name.c_str());
       return hardware_interface::CallbackReturn::ERROR;
     }
   }
 
   if (info_.joints.size() != 2) {
-    RCLCPP_ERROR(kLogger, "NoirInterface expects exactly 2 joints, got %zu.",
+    RCLCPP_ERROR(hwiLogger, "NoirInterface expects exactly 2 joints, got %zu.",
       info_.joints.size());
     return hardware_interface::CallbackReturn::ERROR;
   }
@@ -75,11 +75,11 @@ hardware_interface::CallbackReturn NoirInterface::on_configure(
   const rclcpp_lifecycle::State & /*previous_state*/)
 {
   if (!serial_.open(device_, baud_rate_)) {
-    RCLCPP_ERROR(kLogger, "Failed to open serial port '%s' at %d baud.",
+    RCLCPP_ERROR(hwiLogger, "Failed to open serial port '%s' at %d baud.",
       device_.c_str(), baud_rate_);
     return hardware_interface::CallbackReturn::ERROR;
   }
-  RCLCPP_INFO(kLogger, "Opened '%s' at %d baud.", device_.c_str(), baud_rate_);
+  RCLCPP_INFO(hwiLogger, "Opened '%s' at %d baud.", device_.c_str(), baud_rate_);
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -97,7 +97,7 @@ hardware_interface::CallbackReturn NoirInterface::on_activate(
   // Make sure the board starts stopped, not holding a stale command.
   serial_.write_line("V 0 0");
 
-  RCLCPP_INFO(kLogger, "NoirInterface activated.");
+  RCLCPP_INFO(hwiLogger, "NoirInterface activated.");
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -106,7 +106,7 @@ hardware_interface::CallbackReturn NoirInterface::on_deactivate(
 {
   serial_.write_line("V 0 0");
   serial_.close();
-  RCLCPP_INFO(kLogger, "NoirInterface deactivated.");
+  RCLCPP_INFO(hwiLogger, "NoirInterface deactivated.");
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -153,7 +153,7 @@ hardware_interface::return_type NoirInterface::read(
 
   long left_ticks = 0, right_ticks = 0;
   if (!parse_feedback(line, left_ticks, right_ticks)) {
-    RCLCPP_WARN(kLogger, "Bad feedback line: '%s'", line.c_str());
+    RCLCPP_WARN(hwiLogger, "Bad feedback line: '%s'", line.c_str());
     return hardware_interface::return_type::OK;
   }
 
@@ -184,7 +184,7 @@ hardware_interface::return_type NoirInterface::write(
   std::ostringstream oss;
   oss << "V " << cmd_vel_left_ << " " << cmd_vel_right_;
   if (!serial_.write_line(oss.str())) {
-    RCLCPP_ERROR(kLogger, "Serial write failed.");
+    RCLCPP_ERROR(hwiLogger, "Serial write failed.");
     return hardware_interface::return_type::ERROR;
   }
   return hardware_interface::return_type::OK;
