@@ -52,7 +52,7 @@ private:
   bool parse_feedback(const std::string & line, long & left_ticks, long & right_ticks);
 
   // --- configuration, read from the URDF <ros2_control> block ---
-  std::string device_{"/dev/ttyUSB0"};
+  std::string device_{"/dev/arduino"};
   int baud_rate_{115200};
   int timeout_ms_{50};
   double ticks_per_rev_{2240.0};

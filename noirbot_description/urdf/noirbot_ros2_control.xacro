@@ -5,7 +5,7 @@
   <ros2_control name="NoirbotSystem" type="system">
     <hardware>
       <plugin>noirbot_firmware/NoirInterface</plugin>
-      <param name="device">/dev/ttyUSB0</param>
+      <param name="device">/dev/arduino</param>
       <param name="baud_rate">115200</param>
       <param name="timeout_ms">50</param>
       <param name="ticks_per_rev">2240</param>
