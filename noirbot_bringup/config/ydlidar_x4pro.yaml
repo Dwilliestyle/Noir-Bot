@@ -2,7 +2,7 @@ ydlidar_node:
   ros__parameters:
     port: /dev/lidar
     baudrate: 128000
-    frame_id: laser_frame
+    frame_id: laser_link
     lidar_type: 1
     device_type: 0
     samp_rate: 5
