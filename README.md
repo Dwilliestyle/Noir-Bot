@@ -49,7 +49,7 @@ Not part of this repo (it is in `.gitignore`). Clone it into `src`:
 
 ```bash
 cd ~/noirbot_ws/src
-git clone <DRIVER_URL> ydlidar-ros2-driver
+git clone https://github.com/VirtusCo/ydlidar-ros2-driver.git
 ```
 
 The package it provides is `ydlidar_driver`, with the node `ydlidar_node`.
