@@ -3,7 +3,8 @@ import xacro
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import RegisterEventHandler
+from launch.actions import RegisterEventHandler, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.event_handlers import OnProcessExit
 from launch_ros.actions import Node
 
@@ -57,9 +58,16 @@ def generate_launch_description():
         )
     )
 
+    lidar_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(noirbot_bringup_dir, "launch", "lidar.launch.py")
+        )
+    )
+
     return LaunchDescription([
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
         delayed_diff_drive_spawner,
+        lidar_launch,
     ])
