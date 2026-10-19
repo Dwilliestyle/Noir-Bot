@@ -60,7 +60,7 @@ def generate_launch_description():
 
     mpu_driver = Node(
         package="noirbot_firmware",
-        executable="mpu_driver"
+        executable="mpu_driver_node"
     )
 
     lidar_launch = IncludeLaunchDescription(
