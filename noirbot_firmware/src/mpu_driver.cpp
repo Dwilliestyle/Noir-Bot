@@ -37,7 +37,7 @@ public:
     imu_pub_ = create_publisher<sensor_msgs::msg::Imu>(
       "/imu/out", rclcpp::SensorDataQoS());
 
-    imu_msg_.header.frame_id = "base_footprint";
+    imu_msg_.header.frame_id = this->declare_parameter<std::string>("frame_id", "imu_link");
     // Unknown covariance until calibrated — tells consumers not to trust these for fusion yet
     imu_msg_.angular_velocity_covariance[0] = -1.0;
     imu_msg_.linear_acceleration_covariance[0] = -1.0;
