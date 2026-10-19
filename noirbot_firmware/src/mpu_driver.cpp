@@ -60,7 +60,7 @@ public:
   }
 
 private:
-  void timerCallback()
+    void timerCallback()
   {
     if (!is_connected_) {
       initI2c();
@@ -89,6 +89,12 @@ private:
     const double gz = gyro_z / 7509.55;
 
     if (!calibrated_) {
+      // Let the sensor settle after wake-up before sampling
+      if (warmup_count_ < warmup_samples_) {
+        warmup_count_++;
+        return;
+      }
+
       sum_x_ += gx;  sum_y_ += gy;  sum_z_ += gz;
       sumsq_x_ += gx * gx;  sumsq_y_ += gy * gy;  sumsq_z_ += gz * gz;
       calib_count_++;
@@ -146,7 +152,7 @@ private:
     bool ok = true;
     ok &= writeByteData(SMPLRT_DIV, 7);
     ok &= writeByteData(PWR_MGMT_1, 1);
-    ok &= writeByteData(CONFIG, 0);
+    ok &= writeByteData(CONFIG, 3);
     // GYRO_CONFIG = 0 -> FS_SEL=0 -> +/-250 deg/s (matches the 7509.55 divisor above)
     ok &= writeByteData(GYRO_CONFIG, 0);
     ok &= writeByteData(INT_ENABLE, 1);
