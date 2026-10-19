@@ -4,6 +4,7 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <algorithm>
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/imu.hpp"
@@ -38,6 +39,13 @@ public:
       "/imu/out", rclcpp::SensorDataQoS());
 
     imu_msg_.header.frame_id = this->declare_parameter<std::string>("frame_id", "imu_link");
+    calib_samples_target_ = this->declare_parameter<int>("calibration_samples", 200);
+
+    // This driver doesn't compute orientation; -1 tells consumers to ignore that field
+    imu_msg_.orientation_covariance[0] = -1.0;
+
+    RCLCPP_INFO(get_logger(), "Calibrating gyro bias over %d samples, keep the robot still...",
+                calib_samples_target_);
     // Unknown covariance until calibrated — tells consumers not to trust these for fusion yet
     imu_msg_.angular_velocity_covariance[0] = -1.0;
     imu_msg_.linear_acceleration_covariance[0] = -1.0;
@@ -77,12 +85,45 @@ private:
     }
 
     // Full scale range +/- 250 deg/s, sensitivity 131 LSB/(deg/s)
+    const double gx = gyro_x / 7509.55;
+    const double gy = gyro_y / 7509.55;
+    const double gz = gyro_z / 7509.55;
+
+    if (!calibrated_) {
+      sum_x_ += gx;  sum_y_ += gy;  sum_z_ += gz;
+      sumsq_x_ += gx * gx;  sumsq_y_ += gy * gy;  sumsq_z_ += gz * gz;
+      calib_count_++;
+
+      if (calib_count_ >= calib_samples_target_) {
+        const double n = static_cast<double>(calib_count_);
+        bias_x_ = sum_x_ / n;
+        bias_y_ = sum_y_ / n;
+        bias_z_ = sum_z_ / n;
+
+        // Variance = E[x^2] - (E[x])^2, floored so it's never zero
+        const double var_x = std::max(sumsq_x_ / n - bias_x_ * bias_x_, 1e-6);
+        const double var_y = std::max(sumsq_y_ / n - bias_y_ * bias_y_, 1e-6);
+        const double var_z = std::max(sumsq_z_ / n - bias_z_ * bias_z_, 1e-6);
+
+        // Diagonal of the 3x3 row-major covariance matrix: indices 0, 4, 8
+        imu_msg_.angular_velocity_covariance[0] = var_x;
+        imu_msg_.angular_velocity_covariance[4] = var_y;
+        imu_msg_.angular_velocity_covariance[8] = var_z;
+
+        calibrated_ = true;
+        RCLCPP_INFO(get_logger(),
+          "Gyro calibrated. Bias [rad/s]: x=%.5f y=%.5f z=%.5f | variance: %.2e %.2e %.2e",
+          bias_x_, bias_y_, bias_z_, var_x, var_y, var_z);
+      }
+      return;  // don't publish until calibrated
+    }
+
     imu_msg_.linear_acceleration.x = acc_x / 1670.13;
     imu_msg_.linear_acceleration.y = acc_y / 1670.13;
     imu_msg_.linear_acceleration.z = acc_z / 1670.13;
-    imu_msg_.angular_velocity.x = gyro_x / 7509.55;
-    imu_msg_.angular_velocity.y = gyro_y / 7509.55;
-    imu_msg_.angular_velocity.z = gyro_z / 7509.55;
+    imu_msg_.angular_velocity.x = gx - bias_x_;
+    imu_msg_.angular_velocity.y = gy - bias_y_;
+    imu_msg_.angular_velocity.z = gz - bias_z_;
 
     imu_msg_.header.stamp = get_clock()->now();
     imu_pub_->publish(imu_msg_);
@@ -142,6 +183,13 @@ private:
   rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub_;
   rclcpp::TimerBase::SharedPtr timer_;
   sensor_msgs::msg::Imu imu_msg_;
+  // Gyro calibration
+  bool calibrated_ = false;
+  int calib_samples_target_ = 200;
+  int calib_count_ = 0;
+  double sum_x_ = 0.0, sum_y_ = 0.0, sum_z_ = 0.0;
+  double sumsq_x_ = 0.0, sumsq_y_ = 0.0, sumsq_z_ = 0.0;
+  double bias_x_ = 0.0, bias_y_ = 0.0, bias_z_ = 0.0;
 };
 
 int main(int argc, char ** argv)
