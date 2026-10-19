@@ -58,6 +58,10 @@ def generate_launch_description():
         )
     )
 
+    mpu_driver = Node(
+        package="noirbot_firmware",
+        executable="mpu_driver"
+
     lidar_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(noirbot_bringup_dir, "launch", "lidar.launch.py")
@@ -69,5 +73,6 @@ def generate_launch_description():
         controller_manager_node,
         joint_state_broadcaster_spawner,
         delayed_diff_drive_spawner,
+        mpu_driver,
         lidar_launch,
     ])
