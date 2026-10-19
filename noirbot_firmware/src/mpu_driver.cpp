@@ -188,10 +188,12 @@ private:
   rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub_;
   rclcpp::TimerBase::SharedPtr timer_;
   sensor_msgs::msg::Imu imu_msg_;
-  // Gyro calibration
+    // Gyro calibration
   bool calibrated_ = false;
   int calib_samples_target_ = 200;
   int calib_count_ = 0;
+  int warmup_samples_ = 50;   // 0.5 s at 100 Hz
+  int warmup_count_ = 0;
   double sum_x_ = 0.0, sum_y_ = 0.0, sum_z_ = 0.0;
   double sumsq_x_ = 0.0, sumsq_y_ = 0.0, sumsq_z_ = 0.0;
   double bias_x_ = 0.0, bias_y_ = 0.0, bias_z_ = 0.0;
