@@ -47,7 +47,6 @@ public:
     RCLCPP_INFO(get_logger(), "Calibrating gyro bias over %d samples, keep the robot still...",
                 calib_samples_target_);
     // Unknown covariance until calibrated — tells consumers not to trust these for fusion yet
-    imu_msg_.angular_velocity_covariance[0] = -1.0;
     imu_msg_.linear_acceleration_covariance[0] = -1.0;
 
     timer_ = create_wall_timer(10ms, std::bind(&MpuDriver::timerCallback, this));
