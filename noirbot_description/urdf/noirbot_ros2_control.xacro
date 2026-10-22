@@ -8,7 +8,7 @@
       <param name="device">/dev/arduino</param>
       <param name="baud_rate">115200</param>
       <param name="timeout_ms">50</param>
-      <param name="ticks_per_rev">2240</param>
+      <param name="ticks_per_rev">623</param>
       <param name="loop_rate_hz">30</param>
     </hardware>
 
