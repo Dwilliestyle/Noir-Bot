@@ -40,7 +40,7 @@ const int RIGHT_TICK_SIGN = 1;
 // 385 is what Bumperbot's firmware uses for the same motors. Verify by
 // turning a wheel exactly one revolution by hand and reading the tick
 // count, and make ticks_per_rev in the xacro match this number.
-const double TICKS_PER_REV = 385.0;
+const double TICKS_PER_REV = 623.0; // correct number
 
 const unsigned long PID_INTERVAL_MS    = 100;  // same as Bumperbot
 const unsigned long REPORT_INTERVAL_MS = 33;   // ~30 Hz, matches loop_rate_hz
