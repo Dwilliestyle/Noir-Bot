@@ -47,12 +47,12 @@ const unsigned long REPORT_INTERVAL_MS = 33;   // ~30 Hz, matches loop_rate_hz
 const unsigned long CMD_TIMEOUT_MS     = 500;  // stop if no command received
 
 // PID gains: Bumperbot's values as a starting point.
-double Kp_r = 11.5, Ki_r = 7.5, Kd_r = 0.1;
-double Kp_l = 12.8, Ki_l = 8.3, Kd_l = 0.1;
+double Kp_r = 6.0, Ki_r = 7.5, Kd_r = 0.1;
+double Kp_l = 6.0, Ki_l = 8.3, Kd_l = 0.1;
 
 // Feedforward: from 16.5 rad/s at 255 PWM (wheels lifted).
-const double FF_PWM_PER_RAD_S = 14.6;  // PWM per rad/s of target speed
-const double FF_MIN_PWM       = 14.0;  // roughly where the motors start to turn
+const double FF_PWM_PER_RAD_S = 10.0;  // PWM per rad/s of target speed
+const double FF_MIN_PWM       = 0.0;  // roughly where the motors start to turn
 
 // ============================================================
 // STATE
