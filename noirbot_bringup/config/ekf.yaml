@@ -1,0 +1,43 @@
+# Noirbot EKF config (robot_localization)
+# Fuses wheel odometry (forward speed + yaw rate) with the MPU gyro (yaw rate).
+# Place in: noirbot_bringup/config/ekf.yaml
+
+ekf_filter_node:
+  ros__parameters:
+    frequency: 30.0              # matches the ~30 Hz joint_states rate
+    sensor_timeout: 0.1
+    two_d_mode: true             # ground robot: ignore z, roll, pitch
+    publish_tf: true             # EKF now owns odom -> base_footprint
+    print_diagnostics: true
+
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_footprint
+    world_frame: odom
+
+    # ---- Wheel odometry ----
+    # Check the exact topic with: ros2 topic list | grep odom
+    odom0: /diff_drive_controller/odom
+    # Order: x, y, z, roll, pitch, yaw,
+    #        vx, vy, vz, vroll, vpitch, vyaw,
+    #        ax, ay, az
+    odom0_config: [false, false, false,
+                   false, false, false,
+                   true,  true,  false,
+                   false, false, true,
+                   false, false, false]
+    odom0_differential: false
+    odom0_relative: false
+    odom0_queue_size: 10
+
+    # ---- IMU (gyro yaw rate only; no magnetometer, so no absolute yaw) ----
+    imu0: /imu/out
+    imu0_config: [false, false, false,
+                  false, false, false,
+                  false, false, false,
+                  false, false, true,
+                  false, false, false]
+    imu0_differential: false
+    imu0_relative: false
+    imu0_remove_gravitational_acceleration: true
+    imu0_queue_size: 10

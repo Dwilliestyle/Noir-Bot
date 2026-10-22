@@ -58,6 +58,15 @@ def generate_launch_description():
         )
     )
 
+    ekf_node = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_filter_node",
+        output="screen",
+        parameters=[os.path.join(
+            get_package_share_directory("noirbot_bringup"), "config", "ekf.yaml")],
+    )
+
     mpu_driver = Node(
         package="noirbot_firmware",
         executable="mpu_driver_node"
@@ -74,6 +83,7 @@ def generate_launch_description():
         controller_manager_node,
         joint_state_broadcaster_spawner,
         delayed_diff_drive_spawner,
+        ekf_node,
         mpu_driver,
         lidar_launch,
     ])
