@@ -21,17 +21,17 @@ const int LEFT_ENCODER_B_PIN  = 4;
 const int RIGHT_ENCODER_A_PIN = 3;   // interrupt pin
 const int RIGHT_ENCODER_B_PIN = 5;
 
-const int RIGHT_MOTOR_PWM_PIN = 9;   // L298N enA
-const int RIGHT_MOTOR_IN1_PIN = 12;
-const int RIGHT_MOTOR_IN2_PIN = 13;
+const int LEFT_MOTOR_PWM_PIN  = 9;   // L298N enA
+const int LEFT_MOTOR_IN3_PIN  = 12;
+const int LEFT_MOTOR_IN4_PIN  = 13;
 
-const int LEFT_MOTOR_PWM_PIN  = 11;  // L298N enB
-const int LEFT_MOTOR_IN3_PIN  = 7;
-const int LEFT_MOTOR_IN4_PIN  = 8;
+const int RIGHT_MOTOR_PWM_PIN = 11;  // L298N enB
+const int RIGHT_MOTOR_IN1_PIN = 7;
+const int RIGHT_MOTOR_IN2_PIN = 8;
 
 // Flip these if a wheel counts negative when it turns forward.
-const int LEFT_TICK_SIGN  = 1;
-const int RIGHT_TICK_SIGN = 1;
+const int LEFT_TICK_SIGN  = -1;
+const int RIGHT_TICK_SIGN = -1;
 
 // ============================================================
 // CONSTANTS
@@ -40,7 +40,7 @@ const int RIGHT_TICK_SIGN = 1;
 // 385 is what Bumperbot's firmware uses for the same motors. Verify by
 // turning a wheel exactly one revolution by hand and reading the tick
 // count, and make ticks_per_rev in the xacro match this number.
-const double TICKS_PER_REV = 623.0; // correct number
+const double TICKS_PER_REV = 623.0;
 
 const unsigned long PID_INTERVAL_MS    = 100;  // same as Bumperbot
 const unsigned long REPORT_INTERVAL_MS = 33;   // ~30 Hz, matches loop_rate_hz
@@ -49,6 +49,10 @@ const unsigned long CMD_TIMEOUT_MS     = 500;  // stop if no command received
 // PID gains: Bumperbot's values as a starting point.
 double Kp_r = 11.5, Ki_r = 7.5, Kd_r = 0.1;
 double Kp_l = 12.8, Ki_l = 8.3, Kd_l = 0.1;
+
+// Feedforward: from 16.5 rad/s at 255 PWM (wheels lifted).
+const double FF_PWM_PER_RAD_S = 14.6;  // PWM per rad/s of target speed
+const double FF_MIN_PWM       = 14.0;  // roughly where the motors start to turn
 
 // ============================================================
 // STATE
@@ -64,12 +68,11 @@ double cmd_left_rad_s = 0.0;
 double cmd_right_rad_s = 0.0;
 
 // PID works on speed magnitudes; direction comes from the command sign.
-double left_setpoint = 0.0,  left_measured = 0.0,  left_pwm = 0.0;
-double right_setpoint = 0.0, right_measured = 0.0, right_pwm = 0.0;
+double left_setpoint = 0.0,  left_measured = 0.0,  left_pid_out = 0.0,  left_pwm = 0.0;
+double right_setpoint = 0.0, right_measured = 0.0, right_pid_out = 0.0, right_pwm = 0.0;
 
-PID leftPID(&left_measured, &left_pwm, &left_setpoint, Kp_l, Ki_l, Kd_l, DIRECT);
-PID rightPID(&right_measured, &right_pwm, &right_setpoint, Kp_r, Ki_r, Kd_r, DIRECT);
-
+PID leftPID(&left_measured, &left_pid_out, &left_setpoint, Kp_l, Ki_l, Kd_l, DIRECT);
+PID rightPID(&right_measured, &right_pid_out, &right_setpoint, Kp_r, Ki_r, Kd_r, DIRECT);
 unsigned long last_cmd_ms = 0;
 unsigned long last_pid_ms = 0;
 unsigned long last_report_ms = 0;
@@ -110,18 +113,19 @@ void stopMotors()
   analogWrite(RIGHT_MOTOR_PWM_PIN, 0);
 }
 
-// Runs one PID step for a wheel. With a zero setpoint the PID is switched
-// to MANUAL and its output forced to 0; switching back to AUTOMATIC on the
-// next non-zero command re-initialises it, so no integral is left over
-// from the previous move.
-void updateWheel(PID & pid, double setpoint, double & pwm)
+// Feedforward sets the base PWM from the target speed; the PID adds or
+// subtracts a correction. A zero setpoint stops the wheel and resets the PID.
+void updateWheel(PID & pid, double setpoint, double & pid_out, double & pwm)
 {
   if (setpoint == 0.0) {
     pid.SetMode(MANUAL);
+    pid_out = 0.0;
     pwm = 0.0;
   } else {
     pid.SetMode(AUTOMATIC);
     pid.Compute();
+    double ff = FF_MIN_PWM + FF_PWM_PER_RAD_S * setpoint;
+    pwm = constrain(ff + pid_out, 0.0, 255.0);
   }
 }
 
@@ -186,8 +190,8 @@ void setup()
 
   leftPID.SetSampleTime(PID_INTERVAL_MS);
   rightPID.SetSampleTime(PID_INTERVAL_MS);
-  leftPID.SetOutputLimits(0, 255);
-  rightPID.SetOutputLimits(0, 255);
+  leftPID.SetOutputLimits(-255, 255);
+  rightPID.SetOutputLimits(-255, 255);
 
   stopMotors();
 }
@@ -232,8 +236,8 @@ void loop()
     left_setpoint  = fabs(cmd_left_rad_s);
     right_setpoint = fabs(cmd_right_rad_s);
 
-    updateWheel(leftPID, left_setpoint, left_pwm);
-    updateWheel(rightPID, right_setpoint, right_pwm);
+    updateWheel(leftPID, left_setpoint, left_pid_out, left_pwm);
+    updateWheel(rightPID, right_setpoint, right_pid_out, right_pwm);
 
     driveMotor(LEFT_MOTOR_PWM_PIN, LEFT_MOTOR_IN3_PIN, LEFT_MOTOR_IN4_PIN,
                cmd_left_rad_s >= 0.0, left_pwm);
