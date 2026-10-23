@@ -36,23 +36,24 @@ const int RIGHT_TICK_SIGN = -1;
 // ============================================================
 // CONSTANTS
 // ============================================================
-// Ticks per wheel revolution, counting RISING edges on phase A only.
-// 385 is what Bumperbot's firmware uses for the same motors. Verify by
-// turning a wheel exactly one revolution by hand and reading the tick
-// count, and make ticks_per_rev in the xacro match this number.
+// Measured on Noirbot: 3 hand turns = 1871 / 1869
 const double TICKS_PER_REV = 623.0;
 
 const unsigned long PID_INTERVAL_MS    = 100;  // same as Bumperbot
 const unsigned long REPORT_INTERVAL_MS = 33;   // ~30 Hz, matches loop_rate_hz
 const unsigned long CMD_TIMEOUT_MS     = 500;  // stop if no command received
 
-// PID gains: Bumperbot's values as a starting point.
-double Kp_r = 6.0, Ki_r = 7.5, Kd_r = 0.1;
-double Kp_l = 6.0, Ki_l = 8.3, Kd_l = 0.1;
+// PID gains: Kp lowered for the measured-curve feedforward (same as Indigobot).
+double Kp_r = 3.0, Ki_r = 7.5, Kd_r = 0.0;   // FF: Kp was 6.0, Kd was 0.1
+double Kp_l = 3.0, Ki_l = 8.3, Kd_l = 0.0;   // FF: Kp was 6.0, Kd was 0.1
 
-// Feedforward: from 16.5 rad/s at 255 PWM (wheels lifted).
-const double FF_PWM_PER_RAD_S = 6.5;  // PWM per rad/s of target speed
-const double FF_MIN_PWM       = 9.0;  // roughly where the motors start to turn
+// FF: measured open-loop curve, wheels lifted, average of both wheels.
+// FF_SPEED[k] is the speed reached at PWM = 15 + 15*k  (15, 30, 45 ... 255)
+const int FF_N = 17;
+const double FF_SPEED[FF_N] = {
+   0.00,  1.59,  6.57,  9.67, 11.79, 13.26, 14.30, 15.05, 15.61,
+  16.05, 16.39, 16.69, 16.92, 17.14, 17.30, 17.45, 17.84
+};
 
 // ============================================================
 // STATE
@@ -92,11 +93,15 @@ void rightEncoderISR()
   right_ticks += (b ? 1 : -1) * RIGHT_TICK_SIGN;  // motors face opposite ways
 }
 
-// ============================================================
-// MOTOR OUTPUT (L298N: two direction pins + one PWM pin per motor)
-// ============================================================
-void driveMotor(int pwm_pin, int in_pin_a, int in_pin_b, bool forward, double pwm)
+// BRAKE: set direction and power, or short the motor terminals to brake.
+void driveMotor(int pwm_pin, int in_pin_a, int in_pin_b, bool forward, double pwm, bool brake)
 {
+  if (brake) {
+    digitalWrite(in_pin_a, LOW);
+    digitalWrite(in_pin_b, LOW);
+    analogWrite(pwm_pin, 255);
+    return;
+  }
   if (forward) {
     digitalWrite(in_pin_a, HIGH);
     digitalWrite(in_pin_b, LOW);
@@ -113,6 +118,20 @@ void stopMotors()
   analogWrite(RIGHT_MOTOR_PWM_PIN, 0);
 }
 
+// FF: PWM for a target wheel speed, interpolated from the measured curve
+double feedforward(double target)
+{
+  if (target <= 0.0) return 0.0;
+  if (target >= FF_SPEED[FF_N - 1]) return 255.0;
+  for (int i = 1; i < FF_N; i++) {
+    if (target <= FF_SPEED[i]) {
+      double frac = (target - FF_SPEED[i - 1]) / (FF_SPEED[i] - FF_SPEED[i - 1]);
+      return 15.0 * i + 15.0 * frac;   // PWM of point i-1 is 15*i
+    }
+  }
+  return 255.0;
+}
+
 // Feedforward sets the base PWM from the target speed; the PID adds or
 // subtracts a correction. A zero setpoint stops the wheel and resets the PID.
 void updateWheel(PID & pid, double setpoint, double & pid_out, double & pwm)
@@ -124,7 +143,7 @@ void updateWheel(PID & pid, double setpoint, double & pid_out, double & pwm)
   } else {
     pid.SetMode(AUTOMATIC);
     pid.Compute();
-    double ff = FF_MIN_PWM + FF_PWM_PER_RAD_S * setpoint;
+    double ff = feedforward(setpoint);   // FF: was FF_MIN_PWM + FF_PWM_PER_RAD_S * setpoint
     pwm = constrain(ff + pid_out, 0.0, 255.0);
   }
 }
@@ -240,9 +259,9 @@ void loop()
     updateWheel(rightPID, right_setpoint, right_pid_out, right_pwm);
 
     driveMotor(LEFT_MOTOR_PWM_PIN, LEFT_MOTOR_IN3_PIN, LEFT_MOTOR_IN4_PIN,
-               cmd_left_rad_s >= 0.0, left_pwm);
+               cmd_left_rad_s >= 0.0, left_pwm, left_setpoint == 0.0);     // BRAKE
     driveMotor(RIGHT_MOTOR_PWM_PIN, RIGHT_MOTOR_IN1_PIN, RIGHT_MOTOR_IN2_PIN,
-               cmd_right_rad_s >= 0.0, right_pwm);
+               cmd_right_rad_s >= 0.0, right_pwm, right_setpoint == 0.0);  // BRAKE
   }
 
   // --- Report cumulative ticks to the host ---
