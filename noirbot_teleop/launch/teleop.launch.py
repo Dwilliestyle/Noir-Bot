@@ -36,7 +36,7 @@ def generate_launch_description():
         output="screen",
         prefix="xterm -e",
         parameters=[{"stamped": True}],
-        remappings=[("/cmd_vel", "/noirbot_teleop/cmd_vel")],
+        remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel")],
         condition=IfCondition(PythonExpression(["'", mode, "' == 'keyboard'"])),
     )
 
@@ -59,8 +59,8 @@ def generate_launch_description():
                 executable="teleop_node",
                 name="teleop_twist_joy_node",
                 output="screen",
-                parameters=[teleop_joy_config],
-                remappings=[("/cmd_vel", "/noirbot_teleop/cmd_vel")],
+                parameters=[teleop_joy_config, {"publish_stamped_twist": True}],
+                remappings=[("/cmd_vel", "/diff_drive_controller/cmd_vel")],
             ),
         ],
     )
