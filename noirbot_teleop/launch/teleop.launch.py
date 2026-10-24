@@ -16,7 +16,7 @@ def generate_launch_description():
             PathJoinSubstitution([
                 FindPackageShare('noirbot_bringup'),
                 'launch',
-                'noirbot.launch.py'
+                'robot.launch.py'
             ])
         ])
     )
