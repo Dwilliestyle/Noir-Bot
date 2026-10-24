@@ -19,6 +19,7 @@ ROS2 Jazzy workspace for my Noirbot, concentrating on C++ programming.
 | `noirbot_description` | URDF/xacro, meshes, ros2_control description |
 | `noirbot_firmware` | `NoirInterface` ros2_control hardware plugin (serial to Arduino) |
 | `noirbot_bringup` | Launch files, controller config, lidar config |
+| `noirbot_teleop` | Launch files to move the robot |
 
 ## Setup on a fresh install
 
