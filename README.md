@@ -106,6 +106,12 @@ Lidar only:
 ros2 launch noirbot_bringup lidar.launch.py
 ```
 
+Teleop (includes the bringup as well, make sure to SSH beforehand using -X argument):
+
+```bash
+ros2 launch noirbot_teleop teleop.launch.py
+```
+
 ## Lidar notes (X4 Pro)
 
 Config: `noirbot_bringup/config/ydlidar_x4pro.yaml`
