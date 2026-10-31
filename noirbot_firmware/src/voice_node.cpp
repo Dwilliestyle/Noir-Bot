@@ -9,10 +9,10 @@
 // Parameters:
 //   i2c_bus        (string) default "/dev/i2c-1"
 //   address        (int)    default 0x64
-//   poll_rate_hz   (double) default 10.0   keep it low; the module dislikes fast polling
+//   poll_rate_hz   (double) default 2.0, clamped to 0.5-5.0; fast polling stops recognition
 //   volume         (int)    1-7, default 5        (can be changed live)
 //   wake_time      (int)    0-255 s, default 20   (can be changed live)
-//   mute           (bool)   default false         (can be changed live)
+//   mute           (bool)   default false         (only written if true, or when changed live)
 
 #include <fcntl.h>
 #include <linux/i2c.h>
@@ -25,7 +25,9 @@
 #include <cstring>
 #include <memory>
 #include <stdexcept>
+#include <algorithm>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
@@ -50,6 +52,13 @@ constexpr uint8_t WAKE_CMD_ID = 1;        // writing ID 1 to PLAY_CMDID wakes th
 // we skip polling for this long after any play/wake write.
 constexpr auto PLAY_HOLDOFF = 1000ms;
 
+// Gap between register accesses. DFRobot's getCMDID waits 50 ms after every
+// read to keep I2C traffic from interfering with recognition.
+constexpr auto SETTLE = 50ms;
+
+// Never poll faster than this, whatever poll_rate_hz says.
+constexpr double MAX_POLL_HZ = 5.0;
+
 rcl_interfaces::msg::ParameterDescriptor int_range(
   const std::string & description, int64_t from, int64_t to)
 {
@@ -71,7 +80,13 @@ public:
   {
     i2c_bus_ = declare_parameter<std::string>("i2c_bus", "/dev/i2c-1");
     address_ = static_cast<uint8_t>(declare_parameter<int>("address", 0x64));
-    const double poll_rate = declare_parameter<double>("poll_rate_hz", 10.0);
+    const double requested_rate = declare_parameter<double>("poll_rate_hz", 2.0);
+    const double poll_rate = std::clamp(requested_rate, 0.5, MAX_POLL_HZ);
+    if (poll_rate != requested_rate) {
+      RCLCPP_WARN(
+        get_logger(), "poll_rate_hz %.1f out of range, using %.1f",
+        requested_rate, poll_rate);
+    }
 
     // Ranges are enforced by rclcpp, so bad values are rejected before we see them.
     const int volume = declare_parameter<int>(
@@ -98,10 +113,18 @@ public:
       get_logger(), "DF2301Q found on %s at 0x%02X (wake time was %u s)",
       i2c_bus_.c_str(), address_, current_wake);
 
-    // Apply startup settings.
+    // Apply startup settings, spaced out like DFRobot's Arduino example.
+    // Mute is only written when requested: the Uno test never wrote it and the
+    // module boots unmuted, so we avoid an unneeded register write at startup.
+    std::this_thread::sleep_for(SETTLE);
     write_checked(REG_SET_VOLUME, static_cast<uint8_t>(volume), "volume");
+    std::this_thread::sleep_for(SETTLE);
     write_checked(REG_WAKE_TIME, static_cast<uint8_t>(wake_time), "wake_time");
-    write_checked(REG_SET_MUTE, mute ? 1 : 0, "mute");
+    std::this_thread::sleep_for(SETTLE);
+    if (mute) {
+      write_checked(REG_SET_MUTE, 1, "mute");
+      std::this_thread::sleep_for(SETTLE);
+    }
 
     // Live parameter changes: rclcpp has already validated ranges by the time this runs.
     post_set_handle_ = add_post_set_parameters_callback(
