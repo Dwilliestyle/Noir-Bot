@@ -81,7 +81,7 @@ def generate_launch_description():
     voice_node = Node(
         package='noirbot_firmware',
         executable='voice_node',
-        parameters=[{'volume': 5, 'wake_time': 20}],
+        parameters=[{'wake_time': 20}],
         output='screen',
     )
 
