@@ -15,6 +15,8 @@ find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
 add_library(
   noirbot_firmware
@@ -59,8 +61,11 @@ target_include_directories(
 )
 ament_target_dependencies(mpu_driver_node rclcpp sensor_msgs)
 
+add_executable(voice_node src/voice_node.cpp)
+ament_target_dependencies(voice_node rclcpp std_msgs std_srvs)
+
 install(
-  TARGETS mpu_driver_node
+  TARGETS mpu_driver_node voice_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
