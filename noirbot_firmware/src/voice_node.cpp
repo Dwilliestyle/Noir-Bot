@@ -10,7 +10,7 @@
 //   i2c_bus        (string) default "/dev/i2c-1"
 //   address        (int)    default 0x64
 //   poll_rate_hz   (double) default 2.0, clamped to 0.5-5.0; fast polling stops recognition
-//   volume         (int)    1-7, default 5        (can be changed live)
+//   volume         (int)    1-7, or 0 (default) to leave the module's own volume alone
 //   wake_time      (int)    0-255 s, default 20   (can be changed live)
 //   mute           (bool)   default false         (only written if true, or when changed live)
 
@@ -89,8 +89,9 @@ public:
     }
 
     // Ranges are enforced by rclcpp, so bad values are rejected before we see them.
+    // 0 = leave the module's volume alone, so voice "volume up/down" sticks.
     const int volume = declare_parameter<int>(
-      "volume", 5, int_range("Speaker volume", 1, 7));
+      "volume", 0, int_range("Speaker volume 1-7, or 0 to leave it as is", 0, 7));
     const int wake_time = declare_parameter<int>(
       "wake_time", 20, int_range("Seconds the module listens after waking", 0, 255));
     const bool mute = declare_parameter<bool>("mute", false);
@@ -117,8 +118,10 @@ public:
     // Mute is only written when requested: the Uno test never wrote it and the
     // module boots unmuted, so we avoid an unneeded register write at startup.
     std::this_thread::sleep_for(SETTLE);
-    write_checked(REG_SET_VOLUME, static_cast<uint8_t>(volume), "volume");
-    std::this_thread::sleep_for(SETTLE);
+    if (volume > 0) {
+      write_checked(REG_SET_VOLUME, static_cast<uint8_t>(volume), "volume");
+      std::this_thread::sleep_for(SETTLE);
+    }
     write_checked(REG_WAKE_TIME, static_cast<uint8_t>(wake_time), "wake_time");
     std::this_thread::sleep_for(SETTLE);
     if (mute) {
@@ -126,11 +129,19 @@ public:
       std::this_thread::sleep_for(SETTLE);
     }
 
+    // The module holds the last command ID until it is read, so a command heard
+    // before this node started would be published as if it were new. Clear it.
+    uint8_t stale = 0;
+    if (read_reg(REG_CMDID, stale) && stale != 0) {
+      RCLCPP_INFO(get_logger(), "Cleared stale command ID %u", stale);
+    }
+    std::this_thread::sleep_for(SETTLE);
+
     // Live parameter changes: rclcpp has already validated ranges by the time this runs.
     post_set_handle_ = add_post_set_parameters_callback(
       [this](const std::vector<rclcpp::Parameter> & params) {
         for (const auto & p : params) {
-          if (p.get_name() == "volume") {
+          if (p.get_name() == "volume" && p.as_int() > 0) {
             write_checked(REG_SET_VOLUME, static_cast<uint8_t>(p.as_int()), "volume");
           } else if (p.get_name() == "wake_time") {
             write_checked(REG_WAKE_TIME, static_cast<uint8_t>(p.as_int()), "wake_time");
