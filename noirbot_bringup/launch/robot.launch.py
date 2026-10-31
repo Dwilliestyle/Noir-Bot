@@ -78,6 +78,13 @@ def generate_launch_description():
         )
     )
 
+    voice_node = Node(
+        package='noirbot_firmware',
+        executable='voice_node',
+        parameters=[{'volume': 5, 'wake_time': 20}],
+        output='screen',
+    )
+
     return LaunchDescription([
         robot_state_publisher_node,
         controller_manager_node,
@@ -86,4 +93,5 @@ def generate_launch_description():
         ekf_node,
         mpu_driver,
         lidar_launch,
+        voice_node
     ])
