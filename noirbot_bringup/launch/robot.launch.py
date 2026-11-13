@@ -22,6 +22,26 @@ def generate_launch_description():
         noirbot_bringup_dir, "config", "noirbot_controllers.yaml"
     )
 
+    video_device_arg = DeclareLaunchArgument(
+        'video_device', default_value='/dev/video0',
+        description='USB camera device')
+    width_arg = DeclareLaunchArgument('width', default_value='640')
+    height_arg = DeclareLaunchArgument('height', default_value='480')
+
+    camera_node = Node(
+        package='v4l2_camera',
+        executable='v4l2_camera_node',
+        name='camera',
+        namespace='camera',
+        parameters=[{
+            'video_device': LaunchConfiguration('video_device'),
+            'image_size': [640, 480],
+            'pixel_format': 'YUYV',
+            'camera_frame_id': 'camera_link',
+        }],
+        output='screen',
+    )
+
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -86,6 +106,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        camera_node,
         robot_state_publisher_node,
         controller_manager_node,
         joint_state_broadcaster_spawner,
