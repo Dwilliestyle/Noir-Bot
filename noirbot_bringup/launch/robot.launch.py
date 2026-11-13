@@ -26,8 +26,6 @@ def generate_launch_description():
     video_device_arg = DeclareLaunchArgument(
         'video_device', default_value='/dev/video0',
         description='USB camera device')
-    width_arg = DeclareLaunchArgument('width', default_value='640')
-    height_arg = DeclareLaunchArgument('height', default_value='480')
 
     camera_node = Node(
         package='v4l2_camera',
@@ -108,8 +106,6 @@ def generate_launch_description():
 
     return LaunchDescription([
         video_device_arg,
-        width_arg,
-        height_arg,
         camera_node,
         robot_state_publisher_node,
         controller_manager_node,
