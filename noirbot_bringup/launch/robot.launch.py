@@ -107,6 +107,9 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        video_device_arg,
+        width_arg,
+        height_arg,
         camera_node,
         robot_state_publisher_node,
         controller_manager_node,
