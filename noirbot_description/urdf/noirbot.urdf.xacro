@@ -157,6 +157,38 @@
     <axis xyz="0 0 0" />
   </joint>
 
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.015 0.03 0.03"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.015 0.03 0.03"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <!-- MEASURE: x forward, y left, z up from base_link origin -->
+    <origin xyz="0.07 0 0.08" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="camera_link" />
+  </joint>
+
+  <!-- Optical frame: ROS image convention (z forward, x right, y down) -->
+  <link name="camera_link_optical"/>
+
+  <joint name="camera_optical_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708" />
+    <parent link="camera_link" />
+    <child link="camera_link_optical" />
+  </joint>  
+
 <link name="caster_link">
     <inertial>
       <mass value="0.01"/>
