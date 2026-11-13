@@ -49,7 +49,7 @@
       <geometry>
         <mesh filename="package://noirbot_description/meshes/wheel_right_link.STL" />
       </geometry>
-      <material name="blue"/>
+      <material name="dark_grey"/>
     </visual>
     <collision>
       <origin xyz="0 -0.015 0" rpy="1.57 0 0" />
@@ -80,7 +80,7 @@
       <geometry>
         <mesh filename="package://noirbot_description/meshes/wheel_left_link.STL" />
       </geometry>
-      <material name="blue"/>
+      <material name="dark_grey"/>
     </visual>
     <collision>
       <origin xyz="0 0.015 0" rpy="-1.57 0 0" />
